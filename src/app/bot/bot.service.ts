@@ -61,4 +61,6 @@ export class BotService {
             .get<Response<GetMe>>(`${base}/getMe`)
             .subscribe(res => this.add({ token, ...res.result }), err => alert(err.message))
     }
+
+    
 }

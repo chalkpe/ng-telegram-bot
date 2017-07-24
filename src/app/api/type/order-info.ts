@@ -1,4 +1,4 @@
-import { ShippingAddress } from './shipping_address'
+import { ShippingAddress } from './shipping-address'
 
 export class OrderInfo {
     name?: string
