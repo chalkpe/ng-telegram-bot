@@ -2,5 +2,22 @@
 <h2>Bot inbox</h2>
 
 <div *ngIf="bot">
-    @{{ bot.username}} 봇의 메세지 목록...
+    {{ bot.first_name }} (@{{ bot.username }})
+
+    <ul>
+        <li *ngFor="let message of messages">
+            {{ (message.date * 1000) | date: 'jm' }}
+            
+            <b>{{ 
+                message.chat.title || 
+                (message.chat.first_name +
+                (message.chat.last_name ? ' ' + message.chat.last_name : '')) }}</b>
+
+            <u>{{ message.from ?
+                (message.from.first_name +
+                (message.from.last_name ? ' ' + message.from.last_name : '')) : '' }}</u>
+
+            {{ message.text }}
+        </li>
+    </ul>
 </div>

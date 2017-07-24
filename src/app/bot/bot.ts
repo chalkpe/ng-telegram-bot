@@ -1,6 +1,6 @@
-import { GetMe } from '../api/get-me'
+import { User } from '../api/user'
 
-export class Bot implements GetMe {
+export class Bot {
     token: string
 
     id: number

@@ -1,14 +1,19 @@
-import { Injectable } from '@angular/core'
-import { HttpClient } from '@angular/common/http'
+import 'rxjs/Rx'
+
+import { Injectable }             from '@angular/core'
+import { HttpClient, HttpParams } from '@angular/common/http'
 
 import { Bot } from './bot'
 
-import { GetMe } from '../api/method/get-me'
+import { User } from '../api/user'
+import { Update } from '../api/update'
 import { Response } from '../api/response'
+
+const KEY = 'bots'
+const API = 'https://api.telegram.org/bot'
 
 @Injectable()
 export class BotService {
-    private key = 'bots'
     private bots: Bot[]
 
     constructor(private http: HttpClient) {
@@ -17,12 +22,12 @@ export class BotService {
     }
 
     load() {
-        const data = localStorage.getItem(this.key)
+        const data = localStorage.getItem(KEY)
         this.bots = JSON.parse(data) as Bot[] || []
     }
 
     save() {
-        localStorage.setItem(this.key, JSON.stringify(this.bots))
+        localStorage.setItem(KEY, JSON.stringify(this.bots))
     }
 
     get(): Bot[] {
@@ -30,7 +35,7 @@ export class BotService {
     }
 
     find(id: number) {
-        return Promise.resolve(this.bots.find(b => id === b.id))
+        return this.bots.find(b => id === b.id)
     }
 
     indexOf(bot: Bot) {
@@ -55,10 +60,24 @@ export class BotService {
     }
 
     register(token: string) {
-        const base = `https://api.telegram.org/bot${token}`
-        
         this.http
-            .get<Response<GetMe>>(`${base}/getMe`)
-            .subscribe(res => this.add({ token, ...res.result }), err => alert(err.message))
+            .get<Response<User>>(`${API}${token}/getMe`)
+            .subscribe(
+                res => this.add({ token, ...(res.result as Bot) }),
+                err => alert(err.message))
+    }
+
+    async getMessages(bot: Bot, offset?: number): Promise<Update[]> {
+        const params = offset ? `?offset=${offset}` : ''
+
+        const res = await this.http
+            .get<Response<Update[]>>(`${API}${bot.token}/getUpdates${params}`)
+            .toPromise()
+
+        const updates = res.result
+        if (!updates.length) return []
+        
+        const next = updates[updates.length - 1].update_id + 1
+        return updates.concat(await this.getMessages(bot, next))
     }
 }

@@ -6,11 +6,15 @@ import { Router, ActivatedRoute, ParamMap } from '@angular/router'
 import { Bot } from '../bot'
 import { BotService } from '../bot.service'
 
+import { Message } from '../../api/message'
+
 @Component({
     templateUrl: 'bot-inbox.component.html'
 })
 export class BotInboxComponent implements OnInit {
     bot: Bot
+    messages: Message[]
+
     constructor(
         private service: BotService,
         private route: ActivatedRoute,
@@ -19,7 +23,7 @@ export class BotInboxComponent implements OnInit {
 
     ngOnInit() {
         this.route.paramMap
-            .switchMap((params: ParamMap) => this.service.find(+params.get('id')))
-            .subscribe((bot: Bot) => this.bot = bot)
+            .switchMap((params: ParamMap) => this.service.getMessages(this.bot = this.service.find(+params.get('id'))))
+            .subscribe(updates => this.messages = updates.filter(update => update.message && update.message.text).map(update => update.message))
     }
 }

@@ -1,8 +1,7 @@
 import { User } from './user'
-import { MessageEntityType } from './enum/message-entity-type'
 
 export interface MessageEntity {
-    type: MessageEntityType
+    type: string
     offset: number
     length: number
     url?: string

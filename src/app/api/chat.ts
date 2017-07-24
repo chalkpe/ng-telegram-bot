@@ -1,9 +1,8 @@
-import { ChatType } from './enum/chat-type'
 import { ChatPhoto } from './chat-photo'
 
 export interface Chat {
     id: number
-    type: ChatType
+    type: string
     title?: string
     username?: string
     first_name?: string
