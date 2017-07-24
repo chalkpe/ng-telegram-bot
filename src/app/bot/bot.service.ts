@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http'
 
 import { Bot } from './bot'
 
-import { GetMe } from '../api/get-me'
+import { GetMe } from '../api/method/get-me'
 import { Response } from '../api/response'
 
 @Injectable()
@@ -61,6 +61,4 @@ export class BotService {
             .get<Response<GetMe>>(`${base}/getMe`)
             .subscribe(res => this.add({ token, ...res.result }), err => alert(err.message))
     }
-
-    
 }

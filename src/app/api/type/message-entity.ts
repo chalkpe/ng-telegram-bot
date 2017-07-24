@@ -1,5 +1,5 @@
 import { User } from './user'
-import { MessageEntityType } from './message-entity-type'
+import { MessageEntityType } from './enum/message-entity-type'
 
 export interface MessageEntity {
     type: MessageEntityType

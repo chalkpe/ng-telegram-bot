@@ -1,4 +1,4 @@
-import { ChatType } from './chat-type'
+import { ChatType } from './enum/chat-type'
 import { ChatPhoto } from './chat-photo'
 
 export interface Chat {

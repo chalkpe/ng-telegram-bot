@@ -1,4 +1,4 @@
-import { MaskPositionPoint } from './mask-position-point'
+import { MaskPositionPoint } from './enum/mask-position-point'
 
 export interface MaskPosition {
     point: MaskPositionPoint
