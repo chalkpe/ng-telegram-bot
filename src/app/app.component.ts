@@ -1,14 +1,14 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core'
+import { BotService } from './bot/bot.service'
 
 @Component({
   selector: 'app-root',
-  template: `
-    <h1>
-      Welcome to {{title}}!!
-    </h1>
-  `,
-  styles: []
+  templateUrl: 'app.component.html'
 })
-export class AppComponent {
-  title = 'app';
+export class AppComponent implements OnInit {
+  constructor(private botService: BotService) {}
+  
+  ngOnInit() {
+    
+  }
 }
