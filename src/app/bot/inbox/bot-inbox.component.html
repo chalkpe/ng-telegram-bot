@@ -1,10 +1,15 @@
 <button routerLink="/">Go back</button>
+<button (click)="getMessages()">Refresh</button>
+
 <h2>Bot inbox</h2>
 
 <div *ngIf="bot">
     {{ bot.first_name }} (@{{ bot.username }})
 
     <ul>
+        <li *ngIf="messages === null">Loading messages...</li>
+        <li *ngIf="messages && !messages.length">No incoming messages!</li>
+
         <li *ngFor="let message of messages">
             {{ (message.date * 1000) | date: 'jm' }}
             

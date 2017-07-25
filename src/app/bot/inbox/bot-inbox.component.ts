@@ -13,7 +13,7 @@ import { Message } from '../../api/message'
 })
 export class BotInboxComponent implements OnInit {
     bot: Bot
-    messages: Message[]
+    messages: Message[] = null
 
     constructor(
         private service: BotService,
@@ -22,16 +22,26 @@ export class BotInboxComponent implements OnInit {
     ) {}
 
     ngOnInit() {
-        const botFinder = async ({ get }) => this.service.find(+get('id'))
+        const botFinder = async params => this.service.find(params.get('token'))
 
-        const botCallback = (bot: Bot) => (this.bot = bot)
-            .getFullUpdates()
-            .then(updates => this.messages = updates
-            .filter(update => update.message && update.message.text)
-            .map(update => update.message))
+        const botCallback = async (bot: Bot) => {
+            if (!bot) return this.router.navigate(['/bots'])
+            
+            this.bot = bot
+            this.getMessages()
+        }
 
         this.route.paramMap
             .switchMap(botFinder)
             .subscribe(botCallback)
+    }
+
+    async getMessages() {
+        this.messages = null
+        const updates = await this.bot.getFullUpdates()
+
+        this.messages = updates
+            .filter(update => update.message && update.message.text)
+            .map(update => update.message)
     }
 }

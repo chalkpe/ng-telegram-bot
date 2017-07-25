@@ -6,7 +6,7 @@ import { BotInboxComponent } from './bot/inbox/bot-inbox.component'
 
 const routes: Routes = [
     { path: 'bots', component: BotListComponent },
-    { path: 'inbox/:id', component: BotInboxComponent },
+    { path: 'inbox/:token', component: BotInboxComponent },
     { path: '', redirectTo: '/bots', pathMatch: 'full' }
 ]
 

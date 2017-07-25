@@ -25,7 +25,7 @@ export class BotListComponent implements OnInit {
     }
 
     open(bot: Bot) {
-        this.router.navigate(['/inbox', bot.id])
+        this.router.navigate(['/inbox', bot.token])
     }
 
     remove(bot: Bot){
@@ -33,10 +33,7 @@ export class BotListComponent implements OnInit {
     }
 
     register() {
-        if (!this.token) {
-            alert('Enter bot token first')
-            return
-        }
+        if (!this.token) return alert('Enter bot token first')
 
         this.service.register(this.token)
         this.token = ''

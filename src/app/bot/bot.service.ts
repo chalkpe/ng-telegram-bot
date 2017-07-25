@@ -11,16 +11,18 @@ const KEY = 'tokens'
 
 @Injectable()
 export class BotService {
-    private bots: Bot[] = []
+    private readonly bots: Bot[]
 
     constructor(private http: HttpClient) {
+        this.bots = []
+
         this.load()
         this.save()
     }
 
     private load() {
-        const data = JSON.parse(localStorage.getItem(KEY)) as string[]
-        (data || []).forEach(token => this.register(token))
+        const data = JSON.parse(localStorage.getItem(KEY));
+        (data as string[] || []).forEach(token => this.register(token))
     }
 
     private save() {
@@ -32,8 +34,8 @@ export class BotService {
         return this.bots
     }
 
-    find(id: number) {
-        return this.bots.find(b => id === b.id)
+    find(token: string) {
+        return this.bots.find(b => token === b.token)
     }
 
     indexOf(bot: Bot) {

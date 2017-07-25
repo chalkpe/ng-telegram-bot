@@ -19,13 +19,13 @@ export class Bot extends User {
         return bot
     }
 
-    createURI(method: string, paramMap?: object): string {
+    createURI(method: string, params?: object): string {
         const path = this.base + '/' + method
-        const params = Object.keys(paramMap || {})
-            .filter(key => typeof params[key] === 'string' && params[key].length)
+        const paramStrings = Object.keys(params || {})
+            .filter(key => params[key])
             .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(params[key]))
 
-        return params.length === 0 ? path : (path + '?' + params.join('&'))
+        return paramStrings.length === 0 ? path : (path + '?' + paramStrings.join('&'))
     }
 
     async fetchResponse<T>(method: string, paramMap?: object): Promise<T> {
@@ -45,10 +45,15 @@ export class Bot extends User {
     }
 
     async getFullUpdates() {
-        const updates = await this.getUpdates()
-        if (!updates.length) return []
+        let next = 0
+        const fullUpdates = []
         
-        const next = updates[updates.length - 1].update_id + 1
-        return updates.concat(await this.getUpdates(next))
+        while (true) {
+            const updates = await this.getUpdates(next)
+            if (!updates.length) return fullUpdates
+
+            fullUpdates.push(...updates)
+            next = updates[updates.length - 1].update_id + 1
+        }
     }
 }
