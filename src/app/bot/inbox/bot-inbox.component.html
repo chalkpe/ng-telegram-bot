@@ -1,14 +1,17 @@
 <button routerLink="/">Go back</button>
-<h2>Bot inbox</h2>
+<input type="number" [(ngModel)]="interval" (ngModelChange)="createUpdater()">
+
+<h2>
+    Bot inbox
+    <span *ngIf="lastUpdates > 0">(New {{ lastUpdates }})</span>
+</h2>
 
 <div *ngIf="bot">
     {{ bot.first_name }} (@{{ bot.username }})
 
     <ul>
-        <li *ngIf="messages === null">Loading messages...</li>
-        <li *ngIf="messages && !messages.length">No incoming messages!</li>
-
-        <li *ngFor="let message of messages">
+        <li *ngIf="!bot.messages.length">No incoming messages!</li>
+        <li *ngFor="let message of bot.messages.slice().reverse()">
             {{ (message.date * 1000) | date: 'jm' }}
             
             <b>{{ 

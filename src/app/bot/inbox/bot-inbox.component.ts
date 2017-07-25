@@ -1,4 +1,5 @@
-import 'rxjs/add/operator/switchMap'
+import { Observable } from 'rxjs/Observable'
+import { Subscription } from 'rxjs/Subscription'
 
 import { Component, OnInit, OnDestroy }     from '@angular/core'
 import { Router, ActivatedRoute, ParamMap } from '@angular/router'
@@ -13,9 +14,9 @@ import { Message } from '../../api/message'
 })
 export class BotInboxComponent implements OnInit, OnDestroy {
     bot: Bot
-    messages: Message[] = null
-
-    private timer
+    interval: number = 1000
+    updater: Subscription
+    lastUpdates: number
 
     constructor(
         private service: BotService,
@@ -23,33 +24,41 @@ export class BotInboxComponent implements OnInit, OnDestroy {
         private router: Router
     ) {}
 
+    createUpdater() {
+        this.destroyUpdater()
+        this.updater = Observable
+            .timer(0, this.interval)
+            .concatMap(() => this.getMessages())
+            .subscribe()
+    }
+
+    destroyUpdater() {
+        if (this.updater) {
+            this.updater.unsubscribe()
+            this.updater = null
+        }
+    }
+
     ngOnInit() {
         const botFinder = async params => this.service.find(params.get('token'))
         const botCallback = async (bot: Bot) => {
             if (!bot) return this.router.navigate(['/bots'])
 
             this.bot = bot
-            this.timer = setInterval(() => this.getMessages(), 500)
+            this.createUpdater()
         }
 
         this.route.paramMap
             .switchMap(botFinder)
             .subscribe(botCallback)
-
-        
     }
 
     ngOnDestroy() {
-        clearInterval(this.timer)
+        this.destroyUpdater()
     }
 
     async getMessages() {
         const updates = await this.bot.getFullUpdates()
-        const messages = updates
-            .filter(update => update.message && update.message.text)
-            .map(update => update.message)
-        
-        if (!this.messages) this.messages = []
-        this.messages.splice(0, 0, ...messages.reverse())
+        this.lastUpdates = updates.length
     }
 }

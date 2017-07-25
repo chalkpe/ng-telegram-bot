@@ -2,10 +2,14 @@ import { HttpClient } from '@angular/common/http'
 
 import { User }     from '../api/user'
 import { Update }   from '../api/update'
+import { Message } from '../api/message'
 import { Response } from '../api/response'
 
 export class Bot extends User {
     readonly base: string
+    
+    updates: Update[] = []
+    messages: Message[] = []
 
     private constructor(public token: string, private http: HttpClient) {
         super()
@@ -50,10 +54,17 @@ export class Bot extends User {
         
         while (true) {
             const updates = await this.getUpdates(next)
-            if (!updates.length) return fullUpdates
+            if (!updates.length) break 
 
             fullUpdates.push(...updates)
             next = updates[updates.length - 1].update_id + 1
         }
+
+        this.updates.push(...fullUpdates)
+        this.messages.push(...fullUpdates
+            .filter(update => update.message && update.message.text)
+            .map(update => update.message))
+
+        return fullUpdates
     }
 }
