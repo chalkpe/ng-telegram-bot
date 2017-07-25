@@ -15,9 +15,7 @@ export class BotService {
 
     constructor(private http: HttpClient) {
         this.bots = []
-
         this.load()
-        this.save()
     }
 
     private load() {

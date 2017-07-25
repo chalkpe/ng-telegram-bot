@@ -15,6 +15,7 @@ import { Message } from '../../api/message'
         strong { color: red; }
         th { text-align: left; }
         td, th { padding: 5px; }
+        td { vertical-align: top; }
     `]
 })
 export class BotInboxComponent implements OnInit, OnDestroy {
@@ -22,6 +23,8 @@ export class BotInboxComponent implements OnInit, OnDestroy {
     interval: number = 1000
     updater: Subscription
     lastUpdates: number
+    
+    fileIds: Map<string, string> = new Map()
 
     constructor(
         private service: BotService,
@@ -65,5 +68,12 @@ export class BotInboxComponent implements OnInit, OnDestroy {
     async getMessages() {
         const updates = await this.bot.getFullUpdates()
         this.lastUpdates = updates.length
+    }
+
+    getFile({ file_id }) {
+        if (!this.fileIds.has(file_id)) this.bot.getFile(file_id).then(file =>
+            this.fileIds.set(file_id, this.bot.fileBase + '/' + file.file_path))
+
+        return this.fileIds.get(file_id)
     }
 }

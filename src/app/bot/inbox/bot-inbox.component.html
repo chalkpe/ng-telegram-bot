@@ -8,13 +8,13 @@
 
 <div *ngIf="bot">
     <h4>{{ bot.first_name }} (@{{ bot.username }})</h4>
-    <p *ngIf="!bot.messages.length">No incoming messages!</p>
 
     <table>
         <thead>
             <tr>
                 <th>#</th>
                 <th>Date</th>
+                <th>Time</th>
                 <th>Chat</th>
                 <th>@</th>
                 <th>From</th>
@@ -27,7 +27,8 @@
         <tbody>
             <tr *ngFor="let message of bot.messages.slice().reverse()">
                 <td>{{ message.message_id }}</td>
-                <td>{{ (message.date * 1000) | date: 'jm' }}</td>
+                <td>{{ (message.date * 1000) | date: 'y.MM.dd' }}</td>
+                <td>{{ (message.date * 1000) | date: 'HH:mm:ss' }}</td>
                 
                 <td><b>{{ message.chat | tgChat }}</b></td>
                 <td><b *ngIf="message.chat.username">@{{ message.chat.username }}</b></td>
@@ -37,10 +38,19 @@
 
                 <td [ngSwitch]="true">
                     <div *ngSwitchCase="!!message.text">{{ message.text }}</div>
+                    
+                    <div *ngSwitchCase="!!message.photo">
+                        <img
+                            [src]="getFile(message.photo | tgPhoto)"
+                            [width]="(message.photo | tgPhoto).width"
+                            [height]="(message.photo | tgPhoto).height">
+                    </div>
+                    
                     <div *ngSwitchCase="!!message.sticker">
                         <strong>{{ message.sticker.emoji || '(Emoji)' }}</strong>
                         <span *ngIf="message.sticker.set_name">&nbsp;(@{{ message.sticker.set_name }})</span>
                     </div>
+                    
                     <div *ngSwitchDefault><strong>Not a text</strong></div>
                 </td>
 
@@ -51,4 +61,8 @@
             </tr>
         </tbody>
     </table>
+
+    <tr *ngIf="!bot.messages.length">
+        <td colspan="9">No incoming messages!</td>
+    </tr>
 </div>

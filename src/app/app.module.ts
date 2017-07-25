@@ -5,15 +5,16 @@ import { BrowserModule }    from '@angular/platform-browser'
 import { FormsModule }      from '@angular/forms'
 import { HttpClientModule } from '@angular/common/http'
 
-import { AppComponent } from './app.component'
+import { AppComponent }     from './app.component'
 import { AppRoutingModule } from './app-routing.module'
 
-import { BotService } from './bot/bot.service'
-import { BotListComponent } from './bot/list/bot-list.component'
+import { BotService }        from './bot/bot.service'
+import { BotListComponent }  from './bot/list/bot-list.component'
 import { BotInboxComponent } from './bot/inbox/bot-inbox.component'
 
-import { ChatPipe } from './view/chat.pipe'
-import { UserPipe } from './view/user.pipe'
+import { ChatPipe }  from './view/chat.pipe'
+import { UserPipe }  from './view/user.pipe'
+import { PhotoPipe } from './view/photo.pipe'
 
 @NgModule({
   imports: [
@@ -29,7 +30,8 @@ import { UserPipe } from './view/user.pipe'
     BotInboxComponent,
     
     ChatPipe,
-    UserPipe
+    UserPipe,
+    PhotoPipe
   ],
 
   providers: [BotService],

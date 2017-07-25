@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http'
 
+import { File }     from '../api/file'
 import { User }     from '../api/user'
 import { Update }   from '../api/update'
 import { Message } from '../api/message'
@@ -7,6 +8,7 @@ import { Response } from '../api/response'
 
 export class Bot extends User {
     readonly base: string
+    readonly fileBase: string
     
     updates: Update[] = []
     messages: Message[] = []
@@ -14,6 +16,7 @@ export class Bot extends User {
     private constructor(public token: string, private http: HttpClient) {
         super()
         this.base = `https://api.telegram.org/bot${this.token}`
+        this.fileBase = `https://api.telegram.org/file/bot${this.token}`
     }
 
     static async create(token: string, http: HttpClient) {
@@ -46,6 +49,10 @@ export class Bot extends User {
 
     async getUpdates(offset?: number) {
         return this.fetchResponse<Update[]>('getUpdates', { offset })
+    }
+
+    async getFile(file_id: string) {
+        return this.fetchResponse<File>('getFile', { file_id })
     }
 
     async getFullUpdates() {
