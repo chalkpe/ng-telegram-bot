@@ -16,6 +16,7 @@ import { Message } from '../../api/message'
         th { text-align: left; }
         td, th { padding: 5px; }
         td { vertical-align: top; }
+        tr:nth-child(odd) { background-color: whitesmoke; }
     `]
 })
 export class BotInboxComponent implements OnInit, OnDestroy {
