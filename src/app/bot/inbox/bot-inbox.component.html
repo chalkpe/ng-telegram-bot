@@ -21,6 +21,10 @@
                 <th>@</th>
                 <th>Text</th>
                 <th>Reply</th>
+                <th>Forward</th>
+                <th>@</th>
+                <th>Date</th>
+                <th>Time</th>
             </tr>
         </thead>
 
@@ -44,6 +48,9 @@
                             [src]="getFile(message.photo | tgPhoto)"
                             [width]="(message.photo | tgPhoto).width"
                             [height]="(message.photo | tgPhoto).height">
+
+                        <br>
+                        <i *ngIf="message.caption">{{ message.caption }}</i>
                     </div>
                     
                     <div *ngSwitchCase="!!message.sticker">
@@ -57,10 +64,24 @@
                     </div>
                 </td>
 
-                <td *ngIf="message.reply_to_message?.from">
+                <td><span *ngIf="message.reply_to_message?.from">
                     &gt;&gt; <b>{{ message.reply_to_message.from | tgUser }}</b>
                     {{ message.reply_to_message.text }}
-                </td>
+                </span></td>
+
+                <td><span *ngIf="message.forward_date">
+                    &lt;&lt;
+                    <b *ngIf="message.forward_from_chat">{{ message.forward_from_chat | tgChat }}</b>
+                    <u *ngIf="message.forward_from">{{ message.forward_from | tgUser }}</u>
+                </span></td>
+
+                <td><span *ngIf="message.forward_date">
+                    <b *ngIf="message.forward_from_chat?.username">@{{ message.forward_from_chat.username }}</b>
+                    <u *ngIf="message.forward_from?.username">@{{ message.forward_from.username }}</u>
+                </span></td>
+
+                <td><span *ngIf="message.forward_date">{{ (message.forward_date * 1000) | date: 'y.MM.dd' }}</span></td>
+                <td><span *ngIf="message.forward_date">{{ (message.forward_date * 1000) | date: 'HH:mm:ss' }}</span></td>
             </tr>
         </tbody>
     </table>
