@@ -51,7 +51,10 @@
                         <span *ngIf="message.sticker.set_name">&nbsp;(@{{ message.sticker.set_name }})</span>
                     </div>
                     
-                    <div *ngSwitchDefault><strong>Not a text</strong></div>
+                    <div *ngSwitchDefault>
+                        <strong>Unsupported message</strong>
+                        <pre>{{ message | prettyJson }}</pre>
+                    </div>
                 </td>
 
                 <td *ngIf="message.reply_to_message?.from">
