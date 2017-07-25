@@ -3,7 +3,7 @@ import 'rxjs/add/operator/switchMap'
 import { Component, OnInit }                from '@angular/core'
 import { Router, ActivatedRoute, ParamMap } from '@angular/router'
 
-import { Bot } from '../bot'
+import { Bot }        from '../bot'
 import { BotService } from '../bot.service'
 
 import { Message } from '../../api/message'
@@ -22,8 +22,16 @@ export class BotInboxComponent implements OnInit {
     ) {}
 
     ngOnInit() {
+        const botFinder = async ({ get }) => this.service.find(+get('id'))
+
+        const botCallback = (bot: Bot) => (this.bot = bot)
+            .getFullUpdates()
+            .then(updates => this.messages = updates
+            .filter(update => update.message && update.message.text)
+            .map(update => update.message))
+
         this.route.paramMap
-            .switchMap((params: ParamMap) => this.service.getMessages(this.bot = this.service.find(+params.get('id'))))
-            .subscribe(updates => this.messages = updates.filter(update => update.message && update.message.text).map(update => update.message))
+            .switchMap(botFinder)
+            .subscribe(botCallback)
     }
 }

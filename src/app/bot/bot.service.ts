@@ -1,33 +1,31 @@
-import 'rxjs/Rx'
-
 import { Injectable }             from '@angular/core'
 import { HttpClient, HttpParams } from '@angular/common/http'
 
 import { Bot } from './bot'
 
-import { User } from '../api/user'
-import { Update } from '../api/update'
+import { User }     from '../api/user'
+import { Update }   from '../api/update'
 import { Response } from '../api/response'
 
-const KEY = 'bots'
-const API = 'https://api.telegram.org/bot'
+const KEY = 'tokens'
 
 @Injectable()
 export class BotService {
-    private bots: Bot[]
+    private bots: Bot[] = []
 
     constructor(private http: HttpClient) {
         this.load()
         this.save()
     }
 
-    load() {
-        const data = localStorage.getItem(KEY)
-        this.bots = JSON.parse(data) as Bot[] || []
+    private load() {
+        const data = JSON.parse(localStorage.getItem(KEY)) as string[]
+        (data || []).forEach(token => this.register(token))
     }
 
-    save() {
-        localStorage.setItem(KEY, JSON.stringify(this.bots))
+    private save() {
+        const data = this.bots.map(bot => bot.token)
+        localStorage.setItem(KEY, JSON.stringify(data))
     }
 
     get(): Bot[] {
@@ -60,24 +58,8 @@ export class BotService {
     }
 
     register(token: string) {
-        this.http
-            .get<Response<User>>(`${API}${token}/getMe`)
-            .subscribe(
-                res => this.add({ token, ...(res.result as Bot) }),
-                err => alert(err.message))
-    }
-
-    async getMessages(bot: Bot, offset?: number): Promise<Update[]> {
-        const params = offset ? `?offset=${offset}` : ''
-
-        const res = await this.http
-            .get<Response<Update[]>>(`${API}${bot.token}/getUpdates${params}`)
-            .toPromise()
-
-        const updates = res.result
-        if (!updates.length) return []
-        
-        const next = updates[updates.length - 1].update_id + 1
-        return updates.concat(await this.getMessages(bot, next))
+        Bot.create(token, this.http)
+            .then(bot => this.add(bot))
+            .catch(err => alert(err))
     }
 }
