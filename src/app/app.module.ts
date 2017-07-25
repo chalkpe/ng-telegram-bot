@@ -12,6 +12,9 @@ import { BotService } from './bot/bot.service'
 import { BotListComponent } from './bot/list/bot-list.component'
 import { BotInboxComponent } from './bot/inbox/bot-inbox.component'
 
+import { ChatPipe } from './view/chat.pipe'
+import { UserPipe } from './view/user.pipe'
+
 @NgModule({
   imports: [
     BrowserModule,
@@ -23,7 +26,10 @@ import { BotInboxComponent } from './bot/inbox/bot-inbox.component'
   declarations: [
     AppComponent,
     BotListComponent,
-    BotInboxComponent
+    BotInboxComponent,
+    
+    ChatPipe,
+    UserPipe
   ],
 
   providers: [BotService],

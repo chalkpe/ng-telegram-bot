@@ -7,23 +7,48 @@
 </h2>
 
 <div *ngIf="bot">
-    {{ bot.first_name }} (@{{ bot.username }})
+    <h4>{{ bot.first_name }} (@{{ bot.username }})</h4>
+    <p *ngIf="!bot.messages.length">No incoming messages!</p>
 
-    <ul>
-        <li *ngIf="!bot.messages.length">No incoming messages!</li>
-        <li *ngFor="let message of bot.messages.slice().reverse()">
-            {{ (message.date * 1000) | date: 'jm' }}
-            
-            <b>{{ 
-                message.chat.title || 
-                (message.chat.first_name +
-                (message.chat.last_name ? ' ' + message.chat.last_name : '')) }}</b>
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Date</th>
+                <th>Chat</th>
+                <th>@</th>
+                <th>From</th>
+                <th>@</th>
+                <th>Text</th>
+                <th>Reply</th>
+            </tr>
+        </thead>
 
-            <u>{{ message.from ?
-                (message.from.first_name +
-                (message.from.last_name ? ' ' + message.from.last_name : '')) : '' }}</u>
+        <tbody>
+            <tr *ngFor="let message of bot.messages.slice().reverse()">
+                <td>{{ message.message_id }}</td>
+                <td>{{ (message.date * 1000) | date: 'jm' }}</td>
+                
+                <td><b>{{ message.chat | tgChat }}</b></td>
+                <td><b *ngIf="message.chat.username">@{{ message.chat.username }}</b></td>
 
-            {{ message.text }}
-        </li>
-    </ul>
+                <td><u *ngIf="message.from">{{ message.from | tgUser }}</u></td>
+                <td><u *ngIf="message.from?.username">@{{ message.from.username }}</u></td>
+
+                <td [ngSwitch]="true">
+                    <div *ngSwitchCase="!!message.text">{{ message.text }}</div>
+                    <div *ngSwitchCase="!!message.sticker">
+                        <strong>{{ message.sticker.emoji || '(Emoji)' }}</strong>
+                        <span *ngIf="message.sticker.set_name">&nbsp;(@{{ message.sticker.set_name }})</span>
+                    </div>
+                    <div *ngSwitchDefault><strong>Not a text</strong></div>
+                </td>
+
+                <td *ngIf="message.reply_to_message?.from">
+                    &gt;&gt; <b>{{ message.reply_to_message.from | tgUser }}</b>
+                    {{ message.reply_to_message.text }}
+                </td>
+            </tr>
+        </tbody>
+    </table>
 </div>

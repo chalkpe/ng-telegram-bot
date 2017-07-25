@@ -10,7 +10,12 @@ import { BotService } from '../bot.service'
 import { Message } from '../../api/message'
 
 @Component({
-    templateUrl: 'bot-inbox.component.html'
+    templateUrl: 'bot-inbox.component.html',
+    styles: [`
+        strong { color: red; }
+        th { text-align: left; }
+        td, th { padding: 5px; }
+    `]
 })
 export class BotInboxComponent implements OnInit, OnDestroy {
     bot: Bot

@@ -62,8 +62,8 @@ export class Bot extends User {
 
         this.updates.push(...fullUpdates)
         this.messages.push(...fullUpdates
-            .filter(update => update.message && update.message.text)
-            .map(update => update.message))
+            .filter(update => update.message)
+            .map(update => update.message as Message))
 
         return fullUpdates
     }
