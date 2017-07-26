@@ -9,6 +9,10 @@
 <div *ngIf="bot">
     <h4>{{ bot | tgUser }} (@{{ bot.username }})</h4>
 
+    <div *ngFor="let chat of bot.chats">
+        <input type="checkbox"> {{ chat | tgChat }}
+    </div>
+
     <table>
         <thead>
             <tr>

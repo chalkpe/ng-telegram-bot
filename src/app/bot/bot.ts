@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http'
 
+import { Chat }     from '../api/chat'
 import { File }     from '../api/file'
 import { User }     from '../api/user'
 import { Update }   from '../api/update'
@@ -10,6 +11,7 @@ export class Bot extends User {
     readonly base: string
     readonly fileBase: string
     
+    chats: Chat[] = []
     updates: Update[] = []
     messages: Message[] = []
 
@@ -70,7 +72,10 @@ export class Bot extends User {
         this.updates.push(...fullUpdates)
         this.messages.push(...fullUpdates
             .filter(update => update.message)
-            .map(update => update.message as Message))
+            .map(({ message }) => {
+                if (!this.chats.find(c => message.chat.id === c.id)) this.chats.push(message.chat)
+                return message as Message
+            }))
 
         return fullUpdates
     }
