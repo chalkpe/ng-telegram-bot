@@ -15,15 +15,16 @@ export class BotService {
 
     constructor(private http: HttpClient) {
         this.bots = []
-        this.load()
     }
 
-    private load() {
-        const data = JSON.parse(localStorage.getItem(KEY));
-        (data as string[] || []).forEach(token => this.register(token))
+    async load() {
+        const data: string[] = JSON.parse(localStorage.getItem(KEY))
+        const promises = (data || []).map(token => this.register(token))
+
+        await Promise.all(promises)
     }
 
-    private save() {
+    save() {
         const data = this.bots.map(bot => bot.token)
         localStorage.setItem(KEY, JSON.stringify(data))
     }
@@ -37,7 +38,7 @@ export class BotService {
     }
 
     indexOf(bot: Bot) {
-        return this.bots.findIndex(b => b.id === bot.id)
+        return this.bots.findIndex(b => b.token === bot.token)
     }
 
     add(bot: Bot) {
@@ -57,9 +58,10 @@ export class BotService {
         this.save()
     }
 
-    register(token: string) {
-        Bot.create(token, this.http)
-            .then(bot => this.add(bot))
-            .catch(err => alert(err))
+    async register(token: string) {
+        const bot = this.find(token)
+        if (bot) return bot
+
+        return this.add(await Bot.create(token, this.http))
     }
 }

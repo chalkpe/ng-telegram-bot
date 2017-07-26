@@ -49,9 +49,15 @@ export class BotInboxComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        const botFinder = async params => this.service.find(params.get('token'))
-        const botCallback = async (bot: Bot) => {
-            if (!bot) return this.router.navigate(['/bots'])
+        const botFinder = params =>
+            this.service.load().then(() =>
+            this.service.find(params.get('token')))
+
+        const botCallback = (bot: Bot) => {
+            if (!bot) {
+                alert('invalid bot token!')
+                return this.router.navigate(['/bots'])
+            }
 
             this.bot = bot
             this.createUpdater()

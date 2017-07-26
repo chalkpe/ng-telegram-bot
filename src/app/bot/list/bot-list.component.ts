@@ -16,7 +16,8 @@ export class BotListComponent implements OnInit {
         private router: Router
     ) {}
 
-    ngOnInit() {
+    async ngOnInit() {
+        await this.service.load()
         this.bots = this.service.get()
     }
 
@@ -29,7 +30,7 @@ export class BotListComponent implements OnInit {
     }
 
     remove(bot: Bot){
-        this.service.remove(bot)
+        if (confirm(`Are you sure you want to remove @${bot.username}?`)) this.service.remove(bot)
     }
 
     register() {
