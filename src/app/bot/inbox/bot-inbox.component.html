@@ -7,7 +7,7 @@
 </h2>
 
 <div *ngIf="bot">
-    <h4>{{ bot.first_name }} (@{{ bot.username }})</h4>
+    <h4>{{ bot | tgUser }} (@{{ bot.username }})</h4>
 
     <table>
         <thead>
@@ -44,13 +44,7 @@
                     <div *ngSwitchCase="!!message.text">{{ message.text }}</div>
                     
                     <div *ngSwitchCase="!!message.photo">
-                        <img
-                            [src]="getFile(message.photo | tgPhoto)"
-                            [width]="(message.photo | tgPhoto).width"
-                            [height]="(message.photo | tgPhoto).height">
-
-                        <br>
-                        <i *ngIf="message.caption">{{ message.caption }}</i>
+                        <tg-photo [bot]="bot" [photo]="message.photo" [caption]="message.caption"></tg-photo>
                     </div>
                     
                     <div *ngSwitchCase="!!message.sticker">
@@ -87,6 +81,6 @@
     </table>
 
     <tr *ngIf="!bot.messages.length">
-        <td colspan="9">No incoming messages!</td>
+        <td colspan="13">No incoming messages!</td>
     </tr>
 </div>

@@ -12,9 +12,10 @@ import { BotService }        from './bot/bot.service'
 import { BotListComponent }  from './bot/list/bot-list.component'
 import { BotInboxComponent } from './bot/inbox/bot-inbox.component'
 
+import { PhotoComponent }    from './view/photo.component'
+
 import { ChatPipe }       from './view/chat.pipe'
 import { UserPipe }       from './view/user.pipe'
-import { PhotoPipe }      from './view/photo.pipe'
 import { PrettyJsonPipe } from './view/pretty-json.pipe'
 
 @NgModule({
@@ -32,8 +33,9 @@ import { PrettyJsonPipe } from './view/pretty-json.pipe'
     
     ChatPipe,
     UserPipe,
-    PhotoPipe,
-    PrettyJsonPipe
+    PrettyJsonPipe,
+
+    PhotoComponent
   ],
 
   providers: [BotService],

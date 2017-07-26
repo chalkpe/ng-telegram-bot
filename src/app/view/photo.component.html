@@ -1,0 +1,12 @@
+<div *ngFor="let p of photo; let idx = index">
+    <input type="radio" [checked]="i === idx" [value]="idx" (click)="i = idx">
+    {{ p.width }} * {{ p.height }}
+</div>
+
+<img
+    [src]="getFile(photo[i])"
+    [width]="(photo[i]).width"
+    [height]="(photo[i]).height">
+
+<br>
+<i *ngIf="caption">{{ caption }}</i>
